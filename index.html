@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+	<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">
+    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://getbootstrap.com/docs/5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+	<title>Fibonacci Table</title>
+</head>
+<body>	
+	<div class="container mt-5">
+		<h5 class="text-center mb-5">A table to print all fibonacci series and prime numbers in that series for a given number</h5>
+		<div class="col-sm-4">
+			<input name="numInput" type="number" class="form-control" id="numInput" placeholder="Enter a number">
+			  <strong id="numInputMsg" class="text-danger"></strong>
+		  </div>
+
+	</div>
+	<div class="container">
+
+		<table class="table">
+			<thead>
+			  <tr>
+				<th scope="col">#</th>
+				<th scope="col">last number</th>
+				<th scope="col">Fibonacci Series</th>
+				<th scope="col">Prime Numbers</th>
+			  </tr>
+			</thead>
+			<tbody class="results">
+			</tbody>
+		  </table>
+	</div>
+
+	<script>
+var numberPattern = new RegExp('^[0-9]');
+var numInput = document.querySelector('#numInput')
+var numInputError = true
+
+function validatenumInput(){
+  let numInputMsg = document.querySelector('#numInputMsg')
+	if(!numInput.value.trim().match(numberPattern)){
+		numInputError = true
+		numInputMsg.innerText = "It can only be a positive integer"
+		numInput.classList.add('is-invalid')  
+	}else{
+		numInputMsg.innerText = ""
+		numInput.classList.remove('is-invalid')  
+	}
+}
+
+function numberise(event) {
+        var input = (event.which) ? event.which : event.keyCode
+        if (input != 46 && input > 31 && (input < 48 || input > 57))
+          return false;
+        return true;
+      }
+
+numInput.onkeypress = function(){
+  return numberise(event)
+}
+numInput.addEventListener('focusout', function(){
+	validatenumInput()
+})
+numInput.addEventListener('change', function(){
+	validatenumInput()
+return	fibonacciTable(numInput.value.trim())
+})
+numInput.addEventListener('keyup', function(){
+	validatenumInput()
+return	fibonacciTable(numInput.value.trim())
+})
+
+
+
+var results = document.querySelector('.results')
+
+
+
+function fibonacciPush(count, array){
+	let n1 = 0, n2 = 1, nextTerm;
+
+
+	for (let i = 1; i <= count; i++) {
+		array.push(n2)
+		nextTerm = n1 + n2;
+		n1 = n2;
+		n2 = nextTerm;
+	}
+
+} 
+
+function checkPrime(number) {
+  if (number <= 1) {
+    return false;
+  } else {
+    for (let i = 2; i < number; i++) {
+      if (number % i == 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+
+function get_primes(arr) {
+	primeArray = [null]
+	arr.forEach(element => {
+		if(checkPrime(element)){
+		primeArray.push(element)
+		}
+	})
+	return primeArray
+}
+
+
+
+function fibonacciTable(count){
+
+	var fibonacciArray = []
+	results.innerHTML = ""
+	fibonacciPush(count, fibonacciArray)
+
+	var primeArray = get_primes(fibonacciArray)
+	for(let i = 1; i<count; ++i){
+		results.innerHTML += "<tr><td>"+i+"</td><td>"+fibonacciArray[i-1]+"</td><td>"+fibonacciArray.slice(0, i)+"</td><td>"+primeArray.slice(1, (i-1))+"</td></tr>"
+	}
+	
+
+}
+	</script>
+</body>
+</html>
